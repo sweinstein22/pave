@@ -45,12 +45,13 @@ class SelectionForm extends React.Component {
             label="Department"
             onChange={event => this.handleChange({event, field: 'currentDepartment'})}
           >
+            <MenuItem value="" key="All">All Departments</MenuItem>
             {departments.map(name =>
               <MenuItem value={name} key={name}>{name}</MenuItem>
             )}
           </Select>
         </FormControl>}
-        {currentDataSetName && currentDepartment && <FormControl className="form-control">
+        {currentDataSetName && <FormControl className="form-control">
           <InputLabel id="city-select-label">City</InputLabel>
           <Select
             labelId="city-select-label"
@@ -65,7 +66,7 @@ class SelectionForm extends React.Component {
             )}
           </Select>
         </FormControl>}
-        {currentDataSetName && currentDepartment && <FormControl className="form-control">
+        {currentDataSetName && <FormControl className="form-control">
           <InputLabel id="employment-type-select-label">Employment Type</InputLabel>
           <Select
             labelId="employment-type-select-label"

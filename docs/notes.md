@@ -14,7 +14,7 @@
   - CSS could be cleaned up using SASS, should dig for ways to influence Material
     UI components without using `!important`
 - Accessibility Improvements:
-  - Chart text needs to be more legible
+  - ~Chart text needs to be more legible~
   - Consider improvements around dynamic sizing of the page, and the impact that
     has on data display
 - User Experience Improvements:
@@ -27,3 +27,9 @@
     illumnate where discrepancies lie
   - Allow users to select for just salary and just bonus details, rather than
     total compensation
+- Easy Wins
+  - ~Sort departments/cities/employment types alphabetically to make them easier
+    to find~
+  - ~Remove dependency on department being filled in (relic from making a first
+    pass over the data, should be relatively straightforward to pull things up a
+    layer)~

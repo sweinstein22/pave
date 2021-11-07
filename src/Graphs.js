@@ -13,11 +13,23 @@ class Graphs extends React.Component {
       levels
     } = this.props;
 
-    const options = {plugins: {legend: {display: false}}};
+    const options = {
+      scales: {
+        x: {
+          grid: {color: '#7a7a7a'}, ticks: {color: '#bababa'},
+          title: {text: 'Employee Compensation by Level', display: true, color: 'white'}
+        },
+        y: {
+          grid: {color: '#7a7a7a'}, ticks: {color: '#bababa'},
+          title: {text: 'Total Compensation (Salary + Bonus)', display: true, color: 'white'}
+        },
+      },
+      plugins: {legend: {display: false}}
+    };
     const compDataPath = [currentDepartment, currentCity, currentEmploymentType].filter(i => i).join('.');
 
     let sets = [];
-    let compsForSelection = safeObjectGet(dataSet, compDataPath);
+    let compsForSelection = compDataPath.length ? safeObjectGet(dataSet, compDataPath) : dataSet;
     if (!compsForSelection) return null;
 
     levels.forEach(level => {
@@ -28,11 +40,11 @@ class Graphs extends React.Component {
     const data = {
       labels: levels.map(level => `Level ${level}`),
       datasets:
-        sets.map((data = [0, 0, 0, 0, 0], index) => {
+        sets.map((data, index) => {
           return {
             data,
             label: 'Total Compensation',
-            backgroundColor: `rgb(${index}0, 1${index}0, 1${index}0)`,
+            backgroundColor: `rgb(${index % 10}0, 1${index % 10}0, 1${index % 10}0)`,
             stack: `Stack ${index}`,
           }
         })
@@ -53,7 +65,7 @@ const mapStateToProps = (reduxStore => {
   return {
     currentDepartment,
     currentEmploymentType,
-    dataSet: reduxStore[`${currentDataSetName}SortedDepartmentComps`],
+    dataSet: reduxStore[`${currentDataSetName}SortedComps`],
     levels
   }
 });

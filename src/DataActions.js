@@ -47,9 +47,9 @@ const DataActions = {
     let departments = [];
     let employmentTypes = [];
 
-    let departmentComps = {};
+    let allComps = {};
 
-    dataSet.forEach(({city, department, employmentType, gender, level, salary, bonus}) => {
+    dataSet.forEach(({city, department, employmentType, level, salary, bonus}) => {
       employmentType = mapEmploymentType(employmentType);
 
       cities = [...cities, city];
@@ -58,19 +58,24 @@ const DataActions = {
 
       const employeeCompensation = parseInt(bonus) + parseInt(salary);
 
-      safeObjectAppendToArray(departmentComps, `${department}.${level}`, employeeCompensation)
-      safeObjectAppendToArray(departmentComps, `${department}.${city}.${level}`, employeeCompensation)
-      safeObjectAppendToArray(departmentComps, `${department}.${city}.${employmentType}.${level}`, employeeCompensation)
+      safeObjectAppendToArray(allComps, `${level}`, employeeCompensation)
 
-      safeObjectAppendToArray(departmentComps, `${department}.${employmentType}.${level}`, employeeCompensation)
+      safeObjectAppendToArray(allComps, `${department}.${city}.${employmentType}.${level}`, employeeCompensation)
+      safeObjectAppendToArray(allComps, `${department}.${employmentType}.${level}`, employeeCompensation)
+      safeObjectAppendToArray(allComps, `${department}.${level}`, employeeCompensation)
+      safeObjectAppendToArray(allComps, `${department}.${city}.${level}`, employeeCompensation)
 
+      safeObjectAppendToArray(allComps, `${city}.${employmentType}.${level}`, employeeCompensation)
+      safeObjectAppendToArray(allComps, `${city}.${level}`, employeeCompensation)
+
+      safeObjectAppendToArray(allComps, `${employmentType}.${level}`, employeeCompensation)
     });
 
-    store.dispatch({type: 'SET', path: [`${dataSetName}Cities`], value: [...new Set(cities)]});
-    store.dispatch({type: 'SET', path: [`${dataSetName}Departments`], value: [...new Set(departments)]});
-    store.dispatch({type: 'SET', path: [`${dataSetName}EmploymentTypes`], value: [...new Set(employmentTypes)]});
+    store.dispatch({type: 'SET', path: [`${dataSetName}Cities`], value: [...new Set(cities)].sort()});
+    store.dispatch({type: 'SET', path: [`${dataSetName}Departments`], value: [...new Set(departments)].sort()});
+    store.dispatch({type: 'SET', path: [`${dataSetName}EmploymentTypes`], value: [...new Set(employmentTypes)].sort()});
 
-    store.dispatch({type: 'SET', path: [`${dataSetName}SortedDepartmentComps`], value: departmentComps});
+    store.dispatch({type: 'SET', path: [`${dataSetName}SortedComps`], value: allComps});
   }
 };
 
