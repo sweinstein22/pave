@@ -1,15 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux'
+import {createTheme, MuiThemeProvider} from '@material-ui/core/styles';
 import store from './ReduxStore'
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+const darkTheme = createTheme({
+  palette: {
+    type: 'dark',
+  },
+});
+
 ReactDOM.render(
-  <Provider {...{store: store.getStore()}}>
-    <App />
-  </Provider>,
+  <MuiThemeProvider theme={darkTheme}>
+    <Provider {...{store: store.getStore()}}>
+      <App />
+    </Provider>
+  </MuiThemeProvider>,
   document.getElementById('root')
 );
 

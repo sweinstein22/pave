@@ -1,22 +1,20 @@
-import React from 'react';
-import {connect} from 'react-redux';
 import './App.css';
+import Graphs from './Graphs';
+import SelectionForm from './SelectionForm';
 
-class App extends React.Component {
-
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1>Starter App</h1>
-        </header>
-      </div>
-    );
-  }
+function App() {
+  return (
+    <div className="app">
+      <header className="app-header">
+        <h1>Employee Compensation Data</h1>
+        <h2>The Restaurant Group of San Francisco</h2>
+      </header>
+      <main>
+        <SelectionForm />
+        <Graphs />
+      </main>
+    </div>
+  );
 }
 
-const mapStateToProps = (() => {
-  return {}
-});
-
-export default connect(mapStateToProps)(App);
+export default App;

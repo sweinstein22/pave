@@ -13,6 +13,8 @@ const reducerFunc = (state = initialState, action) => {
       newState = _.cloneDeep(state);
       newState[action.path] = [...newState[action.path], ...action.value];
       return newState;
+    case 'RESET_PATH':
+      return {...state, ...initialPathState}
     case 'RESET':
       return {...initialState};
     default:
@@ -20,14 +22,25 @@ const reducerFunc = (state = initialState, action) => {
   }
 };
 
+const initialPathState = {
+  currentDepartment: '',
+  currentCity: '',
+  currentEmploymentType: ''
+};
+
 const initialState = {
-  employeeData: []
+  employeeData: [],
+  currentDataSetName: 'employeeData',
+  levels: [1, 2, 3, 4, 5],
+  ...initialPathState
 };
 
 export class ReduxStore {
   constructor(createStoreFunc = createStore) {
     this.store = createStoreFunc(reducerFunc, initialState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-    DataActions.parseCSVs();
+    DataActions.parseCSVs().then(() => {
+      DataActions.sortAllData();
+    });
   };
 
   resetStore() {
