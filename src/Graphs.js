@@ -6,11 +6,12 @@ import {safeArrayInsertAtLevel, safeObjectGet} from './Helpers';
 class Graphs extends React.Component {
   render() {
     let {
+      averageComps,
       currentDepartment,
       currentEmploymentType,
       currentCity,
       dataSet,
-      levels
+      levels = []
     } = this.props;
 
     const options = {
@@ -28,6 +29,10 @@ class Graphs extends React.Component {
     };
     const compDataPath = [currentDepartment, currentCity, currentEmploymentType].filter(i => i).join('.');
 
+    const averageCompData = levels.map(level =>
+      safeObjectGet(averageComps, `${compDataPath}${compDataPath.length ? '.' : ''}${level}`)
+    );
+
     let sets = [];
     let compsForSelection = compDataPath.length ? safeObjectGet(dataSet, compDataPath) : dataSet;
     if (!compsForSelection) return null;
@@ -39,15 +44,24 @@ class Graphs extends React.Component {
     });
     const data = {
       labels: levels.map(level => `Level ${level}`),
-      datasets:
-        sets.map((data, index) => {
+      datasets: [
+        {
+          data: averageCompData,
+          type: 'line',
+          label: 'Average Compensation',
+          borderColor: 'rgb(900, 900, 900)',
+          borderWidth: 2
+        },
+        ...sets.map((data, index) => {
           return {
             data,
+            type: 'bar',
             label: 'Total Compensation',
             backgroundColor: `rgb(${index % 10}0, 1${index % 10}0, 1${index % 10}0)`,
             stack: `Stack ${index}`,
           }
         })
+      ]
     };
     return (
       <Bar {...{data, options, redraw: true}} />
@@ -59,14 +73,14 @@ const mapStateToProps = (reduxStore => {
   let {
     currentDataSetName,
     currentDepartment,
-    currentEmploymentType,
-    levels
+    currentEmploymentType
   } = reduxStore;
   return {
+    averageComps: reduxStore[`${currentDataSetName}AverageComps`],
     currentDepartment,
     currentEmploymentType,
     dataSet: reduxStore[`${currentDataSetName}SortedComps`],
-    levels
+    levels: reduxStore[`${currentDataSetName}Levels`]
   }
 });
 

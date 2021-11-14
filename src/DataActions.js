@@ -24,6 +24,7 @@ const DataActions = {
     DataActions.dataSetNames().forEach(dataSetName => {
       DataActions.sortByTotalCompensation({dataSetName});
       DataActions.splitByDistinguishingFactors({dataSetName});
+      DataActions.calculateAverages({dataSetName});
     });
   },
 
@@ -43,6 +44,7 @@ const DataActions = {
     let state = store.getState();
     let dataSet = state[`${dataSetName}SortedByCompensation`] || [];
 
+    let levels = [];
     let cities = [];
     let departments = [];
     let employmentTypes = [];
@@ -52,6 +54,7 @@ const DataActions = {
     dataSet.forEach(({city, department, employmentType, level, salary, bonus}) => {
       employmentType = mapEmploymentType(employmentType);
 
+      levels = [...levels, level];
       cities = [...cities, city];
       departments = [...departments, department];
       employmentTypes = [...employmentTypes, employmentType]
@@ -71,11 +74,36 @@ const DataActions = {
       safeObjectAppendToArray(allComps, `${employmentType}.${level}`, employeeCompensation)
     });
 
+    store.dispatch({type: 'SET', path: [`${dataSetName}Levels`], value: [...new Set(levels)].sort()});
     store.dispatch({type: 'SET', path: [`${dataSetName}Cities`], value: [...new Set(cities)].sort()});
     store.dispatch({type: 'SET', path: [`${dataSetName}Departments`], value: [...new Set(departments)].sort()});
     store.dispatch({type: 'SET', path: [`${dataSetName}EmploymentTypes`], value: [...new Set(employmentTypes)].sort()});
 
     store.dispatch({type: 'SET', path: [`${dataSetName}SortedComps`], value: allComps});
+  },
+
+  calculateAverages: ({dataSetName}) => {
+    let state = store.getState();
+    let dataSet = state[`${dataSetName}SortedComps`] || [];
+    let averageComps = {};
+    Object.keys(dataSet).forEach(key => {
+      let dataAtKey = dataSet[key];
+      averageComps[key] = DataActions.average({data: dataAtKey});
+    });
+
+    store.dispatch({type: 'SET', path: [`${dataSetName}AverageComps`], value: averageComps});
+  },
+
+  average: ({data}) => {
+    if (Array.isArray(data)) {
+      let sum = data.reduce((s, val) => s + val, 0);
+      return (sum / data.length).toFixed(2);
+    } else {
+      return Object.keys(data).reduce((memo, k) => {
+        memo[k] = DataActions.average({data: data[k], key: k});
+        return memo;
+      }, {});
+    };
   }
 };
 
