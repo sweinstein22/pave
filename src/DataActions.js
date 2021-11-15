@@ -1,13 +1,21 @@
 import papa from 'papaparse';
 import store from './ReduxStore';
+import ServerAPI from './ServerAPI';
 import {mapEmploymentType, safeObjectAppendToArray} from './Helpers';
 
 const DataActions = {
-  csvFileNames: () => ['gamine', 'hookfish'],
-  dataSetNames: () => ['employeeData', ...DataActions.csvFileNames().map(n => `${n}Data`)],
+  csvFileNames: async () => {
+    const {fileNames} = await ServerAPI.getFromServer({key: 'fileNames'})
+    store.dispatch({type: 'SET', path: 'csvFileNames', value: fileNames});
+    return fileNames;
+  },
+  dataSetNames: () => {
+    let {csvFileNames} = store.getState();
+    return ['employeeData', ...csvFileNames.map(n => `${n}Data`)]
+  },
 
   parseCSVs: async () => {
-    let csvFileNames = DataActions.csvFileNames();
+    let csvFileNames = await DataActions.csvFileNames();
     for (const fileName of csvFileNames) {
       await fetch(`./data/${fileName}.csv`)
         .then(file => file.text())

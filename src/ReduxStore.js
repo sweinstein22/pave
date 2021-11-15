@@ -29,6 +29,7 @@ const initialPathState = {
 };
 
 const initialState = {
+  csvFileNames: [],
   employeeData: [],
   currentDataSetName: 'employeeData',
   ...initialPathState
