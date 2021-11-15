@@ -16,6 +16,15 @@ add files to this list:
 
 In the project directory, you can run:
 
+### `yarn dev`
+
+Runs the app and the express server in development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view the app in the browser,\
+and [http://localhost:8080](http://localhost:8080) to view responses from the\
+server in the browser.
+
+Both the app and the server will reload if you make edits.
+
 ### `yarn start`
 
 Runs the app in the development mode.\
