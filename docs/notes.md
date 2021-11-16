@@ -18,13 +18,13 @@
   - Consider improvements around dynamic sizing of the page, and the impact that
     has on data display
 - User Experience Improvements:
-  - Dynamically determine the levels used for the charts displayed, rather than
-    hardcoding them
+  - ~Dynamically determine the levels used for the charts displayed, rather than
+    hardcoding them~
   - Find meaningful way to display gender pay disparity
   - Clear out the empty columns that show up when there aren't an even number of
     salaries to display for each level
-  - Add line to chart indicating average compensation for each level, to further
-    illumnate where discrepancies lie
+  - ~Add line to chart indicating average compensation for each level, to further
+    illumnate where discrepancies lie~
   - Allow users to select for just salary and just bonus details, rather than
     total compensation
 - Easy Wins
