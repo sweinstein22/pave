@@ -1,7 +1,8 @@
 const ServerAPI = {
-  getFromServer: async ({key}) => {
+  getFromServer: async ({key, query}) => {
     let returnVal;
-    await fetch(`http://localhost:8080/${key}`, {
+    let queryParams = query ? `?${(new URLSearchParams(query)).toString()}` : '';
+    await fetch(`http://localhost:8080/${key}${queryParams}`, {
       method: 'GET',
       mode: 'cors',
       headers: {'Content-Type': 'application/json'}
@@ -15,7 +16,7 @@ const ServerAPI = {
   },
   getFileFromServer: async ({fileName}) => {
     let returnVal;
-    await fetch(`http://localhost:8080/data/${fileName}`, {
+    await fetch(`http://localhost:8080/data/${fileName}.csv`, {
       method: 'GET',
       mode: 'cors',
       headers: {'Content-Type': 'application/json'}

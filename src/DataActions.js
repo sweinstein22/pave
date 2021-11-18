@@ -1,11 +1,12 @@
-import papa from 'papaparse';
+// import papa from 'papaparse';
 import store from './ReduxStore';
 import ServerAPI from './ServerAPI';
 import {mapEmploymentType, safeObjectAppendToArray} from './Helpers';
 
 const DataActions = {
   csvFileNames: async () => {
-    const {fileNames} = await ServerAPI.getFromServer({key: 'fileNames'})
+    let fileNames = ['gamine', 'hookfish'];
+    // const {fileNames} = await ServerAPI.getFromServer({key: 'fileNames'})
     store.dispatch({type: 'SET', path: 'csvFileNames', value: fileNames});
     return fileNames;
   },
@@ -15,12 +16,12 @@ const DataActions = {
   },
 
   parseCSVs: async () => {
-    let csvFileNames = await DataActions.csvFileNames();
+    // let csvFileNames = await DataActions.csvFileNames();
+    let csvFileNames = ['gamine', 'hookfish'];
     for (const fileName of csvFileNames) {
-      await fetch(`./data/${fileName}.csv`)
-        .then(file => file.text())
-        .then(csvData => papa.parse(csvData, {header: true}))
+      await ServerAPI.getFromServer({key: 'employeeData', query: {dataSet: fileName}})
         .then(parsedData => {
+          console.log(parsedData);
           store.dispatch({type: 'MERGE_ARRAY', path: ['employeeData'], value: parsedData.data});
           store.dispatch({type: 'SET', path: [`${fileName}Data`], value: parsedData.data});
         })
@@ -40,10 +41,10 @@ const DataActions = {
     let state = store.getState();
     let dataSet = state[dataSetName];
     const sortedTotalCompData = dataSet.sort(
-      ({salary: salaryA, bonus: bonusA}, {salary: salaryB, bonus: bonusB}) => {
-        let employeeATotalComp = parseInt(salaryA) + parseInt(bonusA);
-        let employeeBTotalComp = parseInt(salaryB) + parseInt(bonusB);
-        return employeeATotalComp > employeeBTotalComp ? 1 : -1;
+      ({compensation: compensationA}, {compensation: compensationB}) => {
+        // let employeeATotalComp = parseInt(salaryA) + parseInt(bonusA);
+        // let employeeBTotalComp = parseInt(salaryB) + parseInt(bonusB);
+        return compensationA > compensationB ? 1 : -1;
       });
     store.dispatch({type: 'SET', path: [`${dataSetName}SortedByCompensation`], value: sortedTotalCompData})
   },
@@ -59,7 +60,7 @@ const DataActions = {
 
     let allComps = {};
 
-    dataSet.forEach(({city, department, employmentType, level, salary, bonus}) => {
+    dataSet.forEach(({city, department, employmentType, level, compensation}) => {
       employmentType = mapEmploymentType(employmentType);
 
       levels = [...levels, level];
@@ -67,7 +68,7 @@ const DataActions = {
       departments = [...departments, department];
       employmentTypes = [...employmentTypes, employmentType]
 
-      const employeeCompensation = parseInt(bonus) + parseInt(salary);
+      const employeeCompensation = compensation;
 
       safeObjectAppendToArray(allComps, `${level}`, employeeCompensation)
 
